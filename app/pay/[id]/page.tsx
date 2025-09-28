@@ -17,7 +17,6 @@ export default function PayDetailPage() {
   const [memo, setMemo] = useState<string | undefined>(undefined);
   const [title, setTitle] = useState<string>("");
   const [componentHtml, setComponentHtml] = useState<string | undefined>(undefined);
-  const [totals, setTotals] = useState<{ totalPaid: number; paymentsCount: number }>({ totalPaid: 0, paymentsCount: 0 });
 
 
   // Use wagmi hook for wallet connection
@@ -50,17 +49,13 @@ export default function PayDetailPage() {
         setMemo(link.memo || undefined);
         setTitle(link.title);
         setComponentHtml(link.component_code || undefined);
-        setTotals({ totalPaid: Number(link.total_paid || 0), paymentsCount: Number(link.payments_count || 0) });
-      } catch (e: any) {
-        setError(e?.message || "Failed to load link");
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Failed to load link");
       }
     })();
   }, [id]);
 
 
-  const onConnect = (accountId: string) => {
-    // This function is no longer needed as wallet connection is handled by wagmi
-  };
 
 
   const onPay = async () => {
@@ -101,9 +96,9 @@ export default function PayDetailPage() {
         value: parseEther(amount.toString()),
       });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Payment error:", e);
-      setError(e?.message || "Payment failed");
+      setError(e instanceof Error ? e.message : "Payment failed");
       setLoading(false);
     }
   };
@@ -135,16 +130,13 @@ export default function PayDetailPage() {
             .then(res => res.json())
             .then(data => {
               if (data.link) {
-                setTotals({ 
-                  totalPaid: Number(data.link.total_paid || 0), 
-                  paymentsCount: Number(data.link.payments_count || 0) 
-                });
+                // Totals updated in database
               }
             });
         } else {
           console.error("❌ Failed to record payment");
         }
-      }).catch(err => {
+      }).catch((err: unknown) => {
         console.error("❌ Error recording payment:", err);
       });
     }

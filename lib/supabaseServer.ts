@@ -32,7 +32,11 @@ export const supabaseServer = (() => {
         select: () => ({ eq: () => ({ single: () => ({ data: null, error: { message: "Build time - no env vars" } }) }) }),
         update: () => ({ eq: () => ({ select: () => ({ single: () => ({ data: null, error: { message: "Build time - no env vars" } }) }) }) }),
         delete: () => ({ eq: () => ({ data: null, error: { message: "Build time - no env vars" } }) }),
+        insert: () => ({ select: () => ({ single: () => ({ data: null, error: { message: "Build time - no env vars" } }) }) }),
+        upsert: () => ({ select: () => ({ single: () => ({ data: null, error: { message: "Build time - no env vars" } }) }) }),
+        order: () => ({ data: null, error: { message: "Build time - no env vars" } }),
+        maybeSingle: () => ({ data: null, error: { message: "Build time - no env vars" } }),
       }),
-    } as any;
+    } as unknown as ReturnType<typeof getSupabaseServer>;
   }
 })();

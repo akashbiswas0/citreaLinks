@@ -1,5 +1,4 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { mainnet } from 'wagmi/chains';
 
 // Citrea testnet configuration
 export const citreaTestnet = {

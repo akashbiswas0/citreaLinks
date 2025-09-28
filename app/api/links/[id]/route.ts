@@ -19,7 +19,14 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const id = params.id;
   const body = await req.json();
 
-  const update: any = {};
+  const update: {
+    title?: string;
+    to_account?: string;
+    amount?: number;
+    memo?: string | null;
+    description?: string | null;
+    component_code?: string | null;
+  } = {};
   if (body.title !== undefined) update.title = String(body.title);
   if (body.to !== undefined) {
     const toAddress = String(body.to).trim();

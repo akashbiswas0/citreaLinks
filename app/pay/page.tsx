@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CreditCard, Plus, ExternalLink, Sparkles, ArrowRight, Grid3x3, Zap } from "lucide-react";
-import { useAccount } from "wagmi";
+import { CreditCard, Plus, Sparkles, ArrowRight, Grid3x3 } from "lucide-react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 // DB type
@@ -19,7 +18,7 @@ export default function PayListPage() {
   const [links, setLinks] = useState<PaymentLink[]>([]);
   
   // Use wagmi hook for wallet connection
-  const { address: connectedAccount, isConnected } = useAccount();
+  // const { address } = useAccount();
 
   useEffect(() => {
     refreshLinks();
@@ -30,7 +29,14 @@ export default function PayListPage() {
       const res = await fetch("/api/links", { cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to load links");
-      setLinks((data.links || []).map((l: any) => ({
+      setLinks((data.links || []).map((l: {
+        id: string;
+        title: string;
+        to_account: string;
+        amount: number;
+        memo: string | null;
+        description: string | null;
+      }) => ({
         id: l.id,
         title: l.title,
         to_account: l.to_account,
@@ -41,9 +47,6 @@ export default function PayListPage() {
     } catch {}
   };
 
-  const onConnect = (accountId: string) => {
-    // This function is no longer needed as wallet connection is handled by wagmi
-  };
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">

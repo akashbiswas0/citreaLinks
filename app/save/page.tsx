@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Sparkles, Plus, Eye, ExternalLink, Wand2, Save, Link as LinkIcon, Grid3x3, Zap, CreditCard } from "lucide-react";
-import { useAccount } from "wagmi";
+import { Sparkles, Plus, Eye, ExternalLink, Wand2, Save, Link as LinkIcon } from "lucide-react";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 // DB shape from Supabase
@@ -34,7 +33,7 @@ export default function SavePage() {
   const [links, setLinks] = useState<PaymentLink[]>([]);
   
   // Use wagmi hook for wallet connection
-  const { address: connectedAccount, isConnected } = useAccount();
+  // const { address } = useAccount();
 
   useEffect(() => {
     // load from Supabase via API
@@ -49,7 +48,7 @@ export default function SavePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to load links");
       setLinks(data.links || []);
-    } catch (e) {
+    } catch {
       // ignore list error visually
     }
   };
@@ -93,8 +92,8 @@ export default function SavePage() {
       setGenAmount(Number(data.amount));
       setGenDescription(data.description || "");
       setGenComponentHtml(data.componentHtml || "");
-    } catch (e: any) {
-      setError(e?.message || "Generation failed");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Generation failed");
     } finally {
       setLoadingGen(false);
     }
@@ -147,18 +146,11 @@ export default function SavePage() {
       if (!res.ok) throw new Error(data?.error || "Failed to save link");
       setSavedId(data.link.id);
       await refreshLinks();
-    } catch (e: any) {
-      setError(e?.message || "Failed to save link");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to save link");
     }
   };
 
-  const handleLinkClick = (linkId: string) => {
-    console.log(`Opening link: /pay/${linkId}`);
-  };
-
-  const handlePayListClick = () => {
-    console.log("Navigating to /pay");
-  };
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">

@@ -57,7 +57,7 @@ export function migrateLegacy(): PaymentLink[] {
     const legacy = JSON.parse(raw) as { to?: string; amount?: number; memo?: string };
     if (!legacy?.to || !legacy?.amount) return getAllLinks();
 
-    let idBase = "default";
+    const idBase = "default";
     let id = idBase;
     let i = 1;
     while (linkExists(id)) {

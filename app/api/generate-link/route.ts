@@ -71,7 +71,13 @@ export async function POST(req: NextRequest) {
     const content = data?.choices?.[0]?.message?.content?.trim();
     if (!content) return NextResponse.json({ error: "Empty LLM response" }, { status: 502 });
 
-    let parsed: any;
+    let parsed: {
+      title?: string;
+      amount?: number;
+      memo?: string;
+      description?: string;
+      componentHtml?: string;
+    };
     try {
       parsed = JSON.parse(content);
     } catch {
@@ -88,7 +94,7 @@ export async function POST(req: NextRequest) {
     const componentHtml = parsed.componentHtml ? String(parsed.componentHtml) : undefined;
 
     return NextResponse.json({ title, amount, memo, description, componentHtml });
-  } catch (e: any) {
-    return NextResponse.json({ error: e?.message ?? "Unknown error" }, { status: 500 });
+  } catch (e: unknown) {
+    return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 500 });
   }
 }
